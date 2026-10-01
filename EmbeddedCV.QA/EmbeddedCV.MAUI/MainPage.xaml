@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EmbeddedCV.MAUI.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="15">
+
+            <Label Text="Embedded CV QA Dashboard" FontSize="24" FontAttributes="Bold" />
+
+            <Label Text="Resource Constraint Profile" FontAttributes="Bold" />
+            <Picker x:Name="ConstraintPicker" Title="Select profile">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Baseline</x:String>
+                        <x:String>Constrained (Embedded-like)</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Label Text="Load Condition" FontAttributes="Bold" />
+            <Picker x:Name="LoadConditionPicker" Title="Select load condition">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Baseline</x:String>
+                        <x:String>High Load</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Button x:Name="RunButton" Text="Run Test" Clicked="OnRunClicked" Margin="0,10,0,0" />
+
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
+
+            <Label x:Name="StatusLabel" Text="" FontAttributes="Bold" />
+
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,10,0,10" />
+
+            <Label Text="Results" FontSize="18" FontAttributes="Bold" />
+            <Editor x:Name="ResultsLabel"
+        Text="Run a test to see results."
+        FontFamily="Courier"
+        IsReadOnly="True"
+        AutoSize="TextChanges"
+        BackgroundColor="Transparent" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
