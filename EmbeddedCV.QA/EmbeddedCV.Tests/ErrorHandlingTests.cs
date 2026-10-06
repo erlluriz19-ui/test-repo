@@ -1,6 +1,7 @@
 ﻿using EmbeddedCV.Core;
 using EmbeddedCV.Core.Detection;
 using EmbeddedCV.Core.Logging;
+using EmbeddedCV.Core.Constraints;
 
 [TestClass]
 public class ErrorHandlingTests
@@ -72,5 +73,15 @@ public class ErrorHandlingTests
         Assert.IsTrue(results.Any(r => !r.WasSkipped && r.Detections.Count > 0), "Expected the valid frame to still be processed properly");
 
         File.Delete(corruptedPath); // Clean up the temporary corrupted file for the next run
+    }
+
+    [TestMethod]
+    public void ProcessBatch_WithEmptyImageList_ThrowsArgumentException()
+    {
+        using var detector = new OnnxYoloDetector(Path.Combine(AppContext.BaseDirectory, "Assets", "models", "yolov8n.onnx"));
+        var logger = new MetricsLogger();
+        var runner = new DetectionPipelineRunner(detector, logger);
+        Assert.ThrowsException<ArgumentException>(() => 
+        runner.ProcessBatch(new List<string>(), LoadCondition.Baseline));
     }
 }

@@ -50,4 +50,41 @@ public class PipelineRunnerTests
         Console.WriteLine(jsonContent);
         Assert.IsTrue(jsonContent.Contains("bus"), "Expected bus label in logged results");
     }
+
+    [TestMethod]
+    public void SaveToJson_AfterProcessingFrames_ProducesValidParsableJson()
+    {
+        //Arrange
+        using var detector = new OnnxYoloDetector(GetModelPath());
+        var logger = new MetricsLogger();
+        var runner = new DetectionPipelineRunner(detector, logger);
+
+        runner.ProcessFrames(GetSampleImagePath("bus.jpg"), 1);
+
+        var outputPath = Path.Combine(AppContext.BaseDirectory, "json-validity-test-output.json");
+
+        //Act
+        logger.SaveToJson(outputPath);
+
+        //Assert
+        Assert.IsTrue(File.Exists(outputPath));
+
+        var jsonContent = File.ReadAllText(outputPath);
+        List<FrameResult>? parsed = null;
+        
+        try
+        {
+            parsed = System.Text.Json.JsonSerializer.Deserialize<List<FrameResult>>(jsonContent);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            Assert.Fail($"JSON output was not valid/parsable: {ex.Message}");
+        }
+
+        Assert.IsNotNull(parsed);
+        Assert.AreEqual(1, parsed!.Count);
+        Assert.AreEqual(1, parsed[0].FrameNumber);
+
+        File.Delete(outputPath); // Clean up after test
+    }
 }
